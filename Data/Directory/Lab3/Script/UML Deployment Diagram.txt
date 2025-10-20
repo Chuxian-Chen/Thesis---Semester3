@@ -1,0 +1,31 @@
+@startuml
+skinparam nodeStyle rectangle
+
+node "External GAI Service\n(e.g., Google AI / OpenAI API)" as GAI_API {
+  artifact "LLM (GAI Model)" as LLM
+}
+
+node "Application Server" {
+  artifact "LoanApprovalSystem.py" <<Python/Flask>> {
+    
+    component "Loan decision model"
+    component "Fairness Evaluation"
+    
+    component "[GAI Explanation Service]" as GAI_Explain
+    component "[GAI Audit Reporter]" as GAI_Audit
+  }
+}
+
+node "Database Server" {
+  database "PostgreSQL" {
+    artifact "Loan data store"
+    artifact "Fairness data store"
+  }
+}
+
+[Application Server] ..> [Database Server] : "Read/Write Data"
+
+[GAI_Explain] ..> [GAI_API] : "HTTPS API Call (JSON)"
+[GAI_Audit] ..> [GAI_API] : "HTTPS API Call (JSON)"
+
+@enduml
