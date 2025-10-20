@@ -1,0 +1,29 @@
+@startuml
+title GAI Audit Report Generation Flow (Activity Diagram)
+
+start
+
+:Fetch Performance Metrics (e.g., Accuracy, F1-Score)\nfrom [Model Performance] component;
+:Fetch Fairness Metrics (e.g., SPD, EOD)\nfrom [Fairness Performance] component;
+
+:Prepare all raw metrics data\n(e.g., in JSON format);
+
+:Build GAI (LLM) Prompt\n"You are a financial compliance analyst.\nBased on the following data {data},\nwrite a quarterly fairness audit report..." ;
+
+:Call [GAI Audit Reporter] (LLM API);
+
+partition "GAI Audit Reporter (LLM)" {
+  :Process prompt and analyze metrics;
+  :Generate natural language report draft;
+  :Internally review draft for compliance and accuracy;
+}
+
+:Receive GAI-generated report (text);
+
+:Format report as PDF or HTML;
+
+:Store report in [Fairness data store]\nand notify Compliance Officer;
+
+stop
+
+@enduml
