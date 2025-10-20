@@ -1,0 +1,36 @@
+@startuml
+actor "Loan Officer" as Officer
+participant "User Interface" as UI
+participant "Loan Approval System" as LAS
+participant "Loan decision model\n(Fairness-Aware)" as Model
+participant "GAI Explanation Service\n(LLM)" as GAI_Explain
+
+skinparam sequenceMessageAlign center
+
+Officer -> UI : 1. Submit Loan Application Data
+activate UI
+
+UI -> LAS : 2. ProcessApplication(data)
+activate LAS
+
+LAS -> Model : 3. GetDecision(processed_data)
+activate Model
+' Model runs the fairness-aware algorithm from your thesis
+Model --> LAS : 4. Return: Decision (e.g., "Reject") \n+ TechnicalReasons (e.g., SHAP values)
+deactivate Model
+
+' GAI (LLM) Integration Point
+LAS -> GAI_Explain : 5. GenerateExplanation(Decision, TechnicalReasons)
+activate GAI_Explain
+' LLM translates technical data into natural language
+GAI_Explain --> LAS : 6. Return: NaturalLanguageExplanation (text)
+deactivate GAI_Explain
+
+' System returns the GAI-generated text to the frontend
+LAS --> UI : 7. Return: Decision + NaturalLanguageExplanation
+deactivate LAS
+
+UI --> Officer : 8. Display Decision and Clear Explanation:\n"Decision: Reject.\nReason: Applicant credit history is poor..."
+deactivate UI
+
+@enduml
