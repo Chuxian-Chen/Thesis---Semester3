@@ -1,0 +1,50 @@
+@startuml
+skinparam componentStyle uml2
+
+' --- Your Existing System Architecture (from Thesis) ---
+package "Data Service" {
+  [Loan data store]
+  [Fairness data store]
+}
+
+package "Loan Approval System" {
+  [Data Process]
+  [Fairness Constraints]
+  [Loan decision model]
+  [Fairness Evaluation]
+}
+
+package "System Evaluation" {
+  [Model Performance]
+  [Fairness Performance]
+}
+
+' --- New GAI (LLM) Integrated Services ---
+package "Generative AI Services (LLM-Powered)" {
+  [GAI Explanation Service]
+  [GAI Audit Reporter]
+}
+
+' --- Existing Relationships (from your Thesis Fig 3-1) ---
+[Loan data store] -up- [Data Process]
+[Fairness data store] - [Fairness Constraints]
+[Data Process] - [Loan decision model]
+[Fairness Constraints] - [Loan decision model]
+[Fairness Constraints] - [Fairness Evaluation]
+[Loan decision model] - [Fairness Evaluation]
+[Loan decision model] -up- [Model Performance]
+[Fairness Evaluation] - [Fairness Performance]
+
+' --- New GAI Integration Dependencies ---
+
+' 1. GAI Explanation Service depends on the model's decision
+'    and the fairness context.
+[Loan decision model] ..> [GAI Explanation Service] : "Decision + Tech Reasons (SHAP)"
+[Fairness Evaluation] ..> [GAI Explanation Service] : "Fairness Context"
+
+' 2. GAI Audit Reporter depends on the performance and
+'    fairness metrics.
+[Model Performance] ..> [GAI Audit Reporter] : "Performance Metrics (Accuracy, F1)"
+[Fairness Performance] ..> [GAI Audit Reporter] : "Fairness Metrics (SPD, EOD)"
+
+@enduml
