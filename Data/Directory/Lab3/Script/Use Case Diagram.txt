@@ -1,0 +1,33 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Loan Officer" as Officer
+actor "Compliance Officer" as Auditor
+
+rectangle "Fairness-Aware Loan Approval System" {
+  usecase "Process Loan Application" as UC_Process
+  usecase "Evaluate Model Fairness" as UC_Evaluate_Fairness
+  usecase "Evaluate Model Performance" as UC_Evaluate_Performance
+  
+  ' --- GAI (LLM) Integrated Use Cases ---
+  usecase "Get GAI Decision Explanation" as UC_GAI_Explain
+  usecase "Generate GAI Audit Report" as UC_GAI_Audit
+}
+
+' --- Actor-to-Use-Case Associations ---
+Officer -- UC_Process
+Officer -- UC_GAI_Explain
+
+Auditor -- UC_Evaluate_Fairness
+Auditor -- UC_Evaluate_Performance
+Auditor -- UC_GAI_Audit
+
+' --- GAI Use Cases Extend Core System Use Cases ---
+' GAI Explanation extends the loan processing flow
+UC_GAI_Explain ..> UC_Process : <<extends>>
+' GAI Audit extends the evaluation flows
+UC_GAI_Audit ..> UC_Evaluate_Fairness : <<extends>>
+UC_GAI_Audit ..> UC_Evaluate_Performance : <<extends>>
+
+@enduml
