@@ -1,4 +1,4 @@
-# Experiment 6: Fair Lending AI Agent Based on RAG
+# Lab 6: Fair Lending AI Agent Based on RAG
 
 ## Objective
 
